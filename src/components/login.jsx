@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -12,52 +11,70 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BeatLoader } from "react-spinners";
 import Error from "./error";
-import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import * as Yup from "yup";
 import useFetch from "../hooks/useFetch";
 import { login } from "../db/apiAuth";
 import { UrlState } from "@/context";
+
 function Login() {
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
   const longLink = searchParams.get("longLink");
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  
-  const {data, error, loading, fn:fnLogIn} = useFetch(login, formData)
-  const {fetchUser} = UrlState();
-  useEffect(()=>{
-    // console.log(data);
-    if(error === null && data){
+
+  // ✅ don’t bind formData here, only pass the function
+  const { data, error, loading, fn: fnLogIn } = useFetch(login);
+  const { fetchUser } = UrlState();
+
+  useEffect(() => {
+    if (error === null && data) {
       navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
       fetchUser();
     }
-  },[data, error])
+  }, [data, error]);
+
   const handleLogin = async () => {
-    setErrors([]);
+    setErrors({});
     try {
-        const schema = Yup.object().shape({
-          email: Yup.string().email("Invalid email format").required("Email is required"),
-          password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
-        });
-        await schema.validate(formData, { abortEarly: false });
-        await fnLogIn();
-    } catch (error) {
-        const newErrors = {};
-        error?.inner?.forEach((err) => {
-          newErrors[err.path] = err.message; 
-        });
-        setErrors(newErrors);   
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .email("Invalid email format")
+          .required("Email is required"),
+        password: Yup.string()
+          .min(6, "Password must be at least 6 characters")
+          .required("Password is required"),
+      });
+
+      // normalize email
+      const cleanedFormData = {
+        ...formData,
+        email: formData.email.trim().toLowerCase(),
+      };
+
+      await schema.validate(cleanedFormData, { abortEarly: false });
+
+      // console.log("Trying login with:", cleanedFormData);
+      await fnLogIn(cleanedFormData); // ✅ latest values passed here
+    } catch (err) {
+      const newErrors = {};
+      err?.inner?.forEach((e) => {
+        newErrors[e.path] = e.message;
+      });
+      setErrors(newErrors);
     }
   };
+
   return (
     <Card>
       <CardHeader>
