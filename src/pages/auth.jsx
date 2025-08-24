@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../index.css";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SignUp from "@/components/signup";
 import Login from "@/components/login";
+import { UrlState } from "@/context";
 const Auth = () => {
   const [searchParams] = useSearchParams();
+  const longLink = searchParams.get("longLink");
+  const {isAuthenticated, loading} = UrlState();
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(isAuthenticated && !loading){
+      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+    }
+  },[isAuthenticated, loading])
   return (
     <div className="mt-25 flex flex-col items-center gap-10">
       <h1 className="text-5xl font-extrabold">
-        {searchParams.get("createNew")
+        {longLink
           ? "Hold up! Let's login first.."
           : "Login / Signup"}
       </h1>
@@ -21,7 +30,9 @@ const Auth = () => {
         <TabsContent value="login">
           <Login/>
         </TabsContent>
-        <TabsContent value="signup"><SignUp/></TabsContent>
+        <TabsContent value="signup">
+          <SignUp/>
+        </TabsContent>
       </Tabs>
     </div>
   );

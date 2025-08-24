@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -12,39 +11,45 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BeatLoader } from "react-spinners";
 import Error from "./error";
-import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import * as Yup from "yup";
 import useFetch from "../hooks/useFetch";
 import { signup } from "../db/apiAuth";
 import { UrlState } from "@/context";
+import { Eye, EyeOff } from "lucide-react"; // 👁️ icons
+
 function SignUp() {
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     profile_pic: null,
   });
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
   const longLink = searchParams.get("longLink");
+
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({ ...formData, [name]: files ? files[0] : value });
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
   const { data, error, loading, fn: fnSignUp } = useFetch(signup, formData);
   const { fetchUser } = UrlState();
+
   useEffect(() => {
-    // console.log(data);
     if (error === null && data) {
       navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
       fetchUser();
     }
   }, [data, error]);
+
   const handleSignUp = async () => {
-    setErrors([]);
+    setErrors({});
     try {
       const schema = Yup.object().shape({
         name: Yup.string().required("Name is required"),
@@ -56,6 +61,7 @@ function SignUp() {
           .required("Password is required"),
         profile_pic: Yup.mixed().required("Profile pic is required"),
       });
+
       const cleanedFormData = {
         ...formData,
         email: formData.email.trim().toLowerCase(),
@@ -63,14 +69,15 @@ function SignUp() {
 
       await schema.validate(cleanedFormData, { abortEarly: false });
       await fnSignUp(cleanedFormData);
-    } catch (error) {
+    } catch (err) {
       const newErrors = {};
-      error?.inner?.forEach((err) => {
-        newErrors[err.path] = err.message;
+      err?.inner?.forEach((e) => {
+        newErrors[e.path] = e.message;
       });
       setErrors(newErrors);
     }
   };
+
   return (
     <Card>
       <CardHeader>
@@ -89,6 +96,7 @@ function SignUp() {
           />
           {errors.name && <Error message={errors.name} />}
         </div>
+
         <div className="space-y-1">
           <Input
             name="email"
@@ -98,15 +106,25 @@ function SignUp() {
           />
           {errors.email && <Error message={errors.email} />}
         </div>
-        <div className="space-y-1">
+
+        <div className="space-y-1 relative">
           <Input
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Enter Password"
             onChange={handleInputChange}
           />
+          {/* 👁️ Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
           {errors.password && <Error message={errors.password} />}
         </div>
+
         <div className="space-y-1">
           <Input
             name="profile_pic"
@@ -117,13 +135,10 @@ function SignUp() {
           {errors.profile_pic && <Error message={errors.profile_pic} />}
         </div>
       </CardContent>
+
       <CardFooter>
-        <Button onClick={handleSignUp}>
-          {loading ? (
-            <BeatLoader size={10} color="#36d7b7" />
-          ) : (
-            "Create Account"
-          )}
+        <Button onClick={handleSignUp} disabled={loading} className="w-full">
+          {loading ? <BeatLoader size={10} color="#fff" /> : "Create Account"}
         </Button>
       </CardFooter>
     </Card>
