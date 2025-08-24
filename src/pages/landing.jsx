@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import {
   Accordion,
   AccordionContent,
@@ -22,10 +23,28 @@ const LandingPage = () => {
   const [longUrl, setLongUrl] = useState("");
   const navigate = useNavigate();
 
+  // For animation control
+  const controls = useAnimation();
+  const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.2 });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    } else {
+      controls.start("hidden");
+    }
+  }, [controls, inView]);
+
   const handleShorten = (e) => {
     e.preventDefault();
     if (!longUrl) return;
     navigate(`/auth?createNew=${longUrl}`);
+  };
+
+  const scrollToHowItWorks = () => {
+    document.getElementById("how-it-works")?.scrollIntoView({
+      behavior: "smooth",
+    });
   };
 
   const features = [
@@ -80,21 +99,17 @@ const LandingPage = () => {
           placeholder="Enter your long URL"
           className="h-full flex-1 py-4 px-4"
         />
-        <Button className="h-full" type="submit" variant="destructive">
+        <Button className="h-full bg-red-600" type="submit" variant="destructive">
           Shorten!
         </Button>
       </form>
 
-      {/* Smooth Scroll Button */}
+      {/* Learn More Button */}
       <motion.button
+        onClick={scrollToHowItWorks}
+        className="mt-6 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() =>
-          document
-            .getElementById("how-it-works")
-            .scrollIntoView({ behavior: "smooth" })
-        }
-        className="mt-8 px-6 py-3 rounded-full bg-red-600 text-white font-semibold shadow-md hover:bg-red-700 transition"
       >
         Learn More ↓
       </motion.button>
@@ -116,6 +131,7 @@ const LandingPage = () => {
       {/* How It Works Section */}
       <section
         id="how-it-works"
+        ref={ref}
         className="w-full py-16 px-6 sm:px-12 lg:px-24 bg-black text-white"
       >
         <h2 className="text-3xl sm:text-4xl font-extrabold text-center mb-12">
@@ -142,10 +158,13 @@ const LandingPage = () => {
             <motion.div
               key={i}
               className="p-6 bg-neutral-900 rounded-2xl shadow-md hover:shadow-red-500/20 transition"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              variants={{
+                hidden: { opacity: 0, y: 50 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              initial="hidden"
+              animate={controls}
               transition={{ duration: 0.6, delay: i * 0.2 }}
-              viewport={{ once: true }}
             >
               <div className="mb-4">{item.icon}</div>
               <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
