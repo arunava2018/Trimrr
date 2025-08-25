@@ -87,11 +87,11 @@ const Link = () => {
         <h1 className="text-4xl font-extrabold">{url?.title}</h1>
 
         <a
-          href={`https://hostedLink.in/${link}`}
+          href={`https://trimrrly.netlify.app/${link}`}
           target="_blank"
           className="text-2xl text-red-400 font-bold hover:underline break-words"
         >
-          https://hostedLink.in/{link}
+          https://trimrrly.netlify.app/{link}
         </a>
 
         <a
@@ -113,7 +113,7 @@ const Link = () => {
             variant="ghost"
             className="text-red-400 hover:bg-red-900"
             onClick={() =>
-              navigator.clipboard.writeText(`https://hostedLink.in/${link}`)
+              navigator.clipboard.writeText(`https://trimrrly.netlify.app/${link}`)
             }
           >
             <Copy />

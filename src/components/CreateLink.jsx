@@ -122,7 +122,7 @@ export default function CreateLink() {
         {errors.longUrl && <p className="text-red-500 text-sm">{errors.longUrl}</p>}
 
         <div className="flex items-center gap-2">
-          <Card className="p-2">hostedLink.com</Card> /
+          <Card className="p-2">trimrrly.netlify.app</Card> /
           <Input
             id="customUrl"
             placeholder="Custom Link (optional)"
