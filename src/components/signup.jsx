@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import useFetch from "../hooks/useFetch";
 import { signup } from "../db/apiAuth";
 import { UrlState } from "@/context";
-import { Eye, EyeOff } from "lucide-react"; // 👁️ icons
+import { Eye, EyeOff } from "lucide-react";
 
 function SignUp() {
   const [errors, setErrors] = useState({});
@@ -31,7 +31,7 @@ function SignUp() {
 
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
-  const longLink = searchParams.get("longLink");
+  const longLink = searchParams.get("createNew"); // ✅ fixed key
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
@@ -45,7 +45,8 @@ function SignUp() {
   useEffect(() => {
     if (error === null && data) {
       toast.success("Signup successful 🎉");
-      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      // ✅ preserve ?createNew param if it exists
+      navigate(`/dashboard${longLink ? `?createNew=${longLink}` : ""}`);
       fetchUser();
     }
     if (error) {
@@ -119,7 +120,6 @@ function SignUp() {
             placeholder="Enter Password"
             onChange={handleInputChange}
           />
-          {/* 👁️ Toggle Button */}
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}

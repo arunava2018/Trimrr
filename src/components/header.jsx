@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
-import logo1 from "../assets/logo1.png";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,13 +23,13 @@ const Header = () => {
 
   return (
     <>
-      <nav className="py-4 px-4 flex justify-between items-center max-w-7xl mx-auto">
-        {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2">
-          <img src={logo1} className="h-8 md:h-10" alt="Trimrr Logo" />
-          <span className="text-xl font-bold text-red-600 hidden sm:block">
-            Trimrr
-          </span>
+      <nav className="py-4 px-6 flex justify-between items-center max-w-7xl mx-auto">
+        {/* Brand Logo (Text only) */}
+        <Link
+          to="/"
+          className="text-2xl font-extrabold tracking-tight text-red-600 hover:text-red-700 transition-colors duration-200"
+        >
+          Trimrr
         </Link>
 
         {/* Right Side */}
@@ -38,8 +37,8 @@ const Header = () => {
           {!user ? (
             <Button
               onClick={() => navigate("/auth")}
-              className="bg-red-600 text-white px-4 py-2 rounded-lg shadow-md 
-             hover:bg-red-700 hover:scale-105 transition-all duration-200 ease-in-out"
+              className="bg-red-600 text-white px-5 py-2 rounded-lg shadow-md 
+               hover:bg-red-700 hover:scale-105 transition-all duration-200 ease-in-out"
             >
               Login
             </Button>
@@ -58,8 +57,8 @@ const Header = () => {
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuLabel className="font-semibold">
                   {user?.user_metadata?.name}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -77,7 +76,7 @@ const Header = () => {
                       navigate("/");
                     });
                   }}
-                  className="text-red-600"
+                  className="text-red-600 cursor-pointer"
                 >
                   {loading ? (
                     <BarLoader width={60} color="#e11d48" />
@@ -97,7 +96,7 @@ const Header = () => {
       {/* Top Loading Bar */}
       {loading && (
         <div className="fixed top-0 left-0 w-full z-50">
-          <BarLoader width="100%" color="#e11d48" />
+          <BarLoader width="100%" color="#e11d48" height={3} />
         </div>
       )}
     </>

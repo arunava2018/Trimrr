@@ -36,7 +36,7 @@ function Login() {
 
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
-  const longLink = searchParams.get("longLink");
+  const longLink = searchParams.get("createNew");
 
   const { data, error, loading, fn: fnLogIn } = useFetch(login);
   const { fetchUser } = UrlState();
@@ -44,7 +44,8 @@ function Login() {
   useEffect(() => {
     if (error === null && data) {
       toast.success("Login successful 🎉");
-      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      // navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      navigate(`/dashboard${longLink ? `?createNew=${encodeURIComponent(longLink)}` : ""}`);
       fetchUser();
     }
     if (error) {
