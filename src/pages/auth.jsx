@@ -7,7 +7,7 @@ import Login from "@/components/login";
 import { UrlState } from "@/context";
 const Auth = () => {
   const [searchParams] = useSearchParams();
-  const longLink = searchParams.get("longLink");
+  const longLink = searchParams.get("createNew");
   const {isAuthenticated, loading} = UrlState();
   const navigate = useNavigate();
   useEffect(()=>{
