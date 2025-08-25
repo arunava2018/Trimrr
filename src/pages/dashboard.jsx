@@ -1,5 +1,4 @@
 import LinkCard from "@/components/link-card";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { UrlState } from "@/context";
@@ -7,9 +6,10 @@ import { getClicks } from "@/db/apiClicks";
 import { getUrls } from "@/db/apiUrls";
 import useFetch from "@/hooks/useFetch";
 import { Filter } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { BarLoader } from "react-spinners";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import CreateLink from "@/components/CreateLink";
 
 const Dashboard = () => {
   const [searchQuery, setsearchQuery] = useState("");
@@ -20,6 +20,11 @@ const Dashboard = () => {
     data: clicks,
     fn: fnClicks,
   } = useFetch(getClicks);
+
+  // Stable callback for refetching URLs
+  const refetchUrls = useCallback(() => {
+    if (user?.id) fnUrls(user.id);
+  }, [user?.id, fnUrls]);
 
   useEffect(() => {
     if (user?.id) fnUrls(user.id);
@@ -67,9 +72,7 @@ const Dashboard = () => {
       {/* Header + Button */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-4xl font-extrabold text-white">My Links</h1>
-        <Button className="bg-red-600 hover:bg-red-700 text-white rounded-xl px-6 py-2">
-          Create Link
-        </Button>
+        <CreateLink />
       </div>
 
       {/* Search Bar */}
@@ -84,11 +87,21 @@ const Dashboard = () => {
         <Filter className="absolute top-2.5 right-3 text-red-500 w-5 h-5" />
       </div>
 
-      {/* Links List (Full Width Always) */}
+      {/* Links List with animation */}
       <div className="flex flex-col gap-6 w-full">
-        {(filteredUrls || []).map((url, i) => (
-          <LinkCard key={i} url={url} fetchUrls={fnUrls} />
-        ))}
+        <AnimatePresence>
+          {(filteredUrls || []).map((url) => (
+            <motion.div
+              key={url.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.25 }}
+            >
+              <LinkCard url={url} fetchUrls={refetchUrls} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );

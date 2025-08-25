@@ -53,21 +53,21 @@ function LinkCard({ url, fetchUrls }) {
 
       {/* Info */}
       <div className="flex flex-col flex-1 gap-2">
-        <Link to={`link/${url?.id}`}>
+        <Link to={`/link/${url?.id}`}>
           <h2 className="text-2xl font-bold text-white hover:text-red-400 transition">
             {url?.title}
           </h2>
         </Link>
         <a
-          href={`https://trimrr.in/${url?.custom_url || url.short_url}`}
+          href={`https://hostedLink.in/${url?.custom_url || url.short_url}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-red-400 text-lg font-medium hover:underline"
         >
-          https://trimrr.in/{url?.custom_url || url.short_url}
+          https://hostedLink.in/{url?.custom_url || url.short_url}
         </a>
-        <div className="flex items-center gap-2 text-gray-400 text-sm truncate">
-          <LinkIcon className="w-4 h-4 text-red-400" />
+        <div className="flex items-center gap-2 text-gray-400 text-sm max-w-xs md:max-w-sm lg:max-w-md truncate">
+          <LinkIcon className="w-4 h-4 text-red-400 shrink-0" />
           <span className="truncate">{url?.original_url}</span>
         </div>
         <span className="text-xs text-gray-500">
@@ -84,7 +84,7 @@ function LinkCard({ url, fetchUrls }) {
             className="hover:bg-red-500/20"
             onClick={() =>
               navigator.clipboard.writeText(
-                `https://trimrr.in/${url?.short_url}`
+                `https://hostedLink.in/${url?.short_url}`
               )
             }
           >
@@ -106,8 +106,6 @@ function LinkCard({ url, fetchUrls }) {
         <motion.div whileTap={{ scale: 0.85 }}>
           <Button
             variant="ghost"
-            size="icon"
-            className="hover:bg-red-500/20"
             onClick={() => fnDelete(url.id).then(() => fetchUrls())}
             disabled={loadingDelete}
           >
