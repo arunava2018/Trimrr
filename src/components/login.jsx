@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import {
   Card,
   CardContent,
@@ -20,8 +21,12 @@ import { Eye, EyeOff } from "lucide-react"; // 👁 icons
 
 // ✅ Schema outside component
 const loginSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email format").required("Email is required"),
-  password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+  email: Yup.string()
+    .email("Invalid email format")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
 });
 
 function Login() {
@@ -38,8 +43,12 @@ function Login() {
 
   useEffect(() => {
     if (error === null && data) {
+      toast.success("Login successful 🎉");
       navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
       fetchUser();
+    }
+    if (error) {
+      toast.error(error.message || "Login failed. Try again.");
     }
   }, [data, error]);
 
@@ -71,13 +80,17 @@ function Login() {
     <Card>
       <CardHeader>
         <CardTitle>Login</CardTitle>
-        <CardDescription>to your account if you already have one</CardDescription>
+        <CardDescription>
+          to your account if you already have one
+        </CardDescription>
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-2">
           <div className="space-y-1">
-            <label htmlFor="email" className="sr-only">Email</label>
+            <label htmlFor="email" className="sr-only">
+              Email
+            </label>
             <Input
               id="email"
               name="email"
@@ -91,7 +104,9 @@ function Login() {
           </div>
 
           <div className="space-y-1 relative">
-            <label htmlFor="password" className="sr-only">Password</label>
+            <label htmlFor="password" className="sr-only">
+              Password
+            </label>
             <Input
               id="password"
               name="password"
@@ -112,7 +127,9 @@ function Login() {
             {errors.password && <Error message={errors.password} />}
           </div>
 
-          {error && <Error message={error.message || "Login failed. Try again."} />}
+          {error && (
+            <Error message={error.message || "Login failed. Try again."} />
+          )}
         </CardContent>
 
         <CardFooter>

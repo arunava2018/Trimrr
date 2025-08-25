@@ -3,12 +3,14 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./layouts/app-layout";
 import LandingPage from "./pages/landing";
 import Dashboard from "./pages/dashboard";
+import { ToastContainer } from "react-toastify";
 import Auth from "./pages/auth";
 import Link from "./pages/link";
 import RedirectLink from "./pages/redirect-link";
 import UrlProvider from "./context.jsx";
 import "./App.css";
 import RequireAuth from "./components/require-auth";
+import "react-toastify/dist/ReactToastify.css";
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
@@ -40,6 +42,7 @@ function App() {
   return (
     <UrlProvider>
       <RouterProvider router = {router}/>
+      <ToastContainer position="top-right" autoClose={2000} />
     </UrlProvider>
   );
 }

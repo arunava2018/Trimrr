@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import {
   Card,
   CardContent,
@@ -43,8 +44,12 @@ function SignUp() {
 
   useEffect(() => {
     if (error === null && data) {
+      toast.success("Signup successful 🎉");
       navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
       fetchUser();
+    }
+    if (error) {
+      toast.error(error.message || "SignUp failed. Try again.");
     }
   }, [data, error]);
 
