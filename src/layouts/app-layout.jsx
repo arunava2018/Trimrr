@@ -53,10 +53,10 @@ const AppLayout = () => {
               <a href="#" className="hover:text-red-400 transition-colors">
                 <Twitter size={22} />
               </a>
-              <a href="#" className="hover:text-red-400 transition-colors">
+              <a href="https://github.com/arunava2018" className="hover:text-red-400 transition-colors">
                 <Github size={22} />
               </a>
-              <a href="#" className="hover:text-red-400 transition-colors">
+              <a href="https://www.linkedin.com/in/arunava-banerjee1/" className="hover:text-red-400 transition-colors">
                 <Linkedin size={22} />
               </a>
             </div>
