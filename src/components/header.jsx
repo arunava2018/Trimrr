@@ -29,7 +29,7 @@ const Header = () => {
           to="/"
           className="text-2xl font-extrabold tracking-tight text-red-600 hover:text-red-700 transition-colors duration-200"
         >
-          Trimrr
+          Trimrrly
         </Link>
 
         {/* Right Side */}

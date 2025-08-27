@@ -17,7 +17,7 @@ const AppLayout = () => {
         <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10 text-center md:text-left">
           {/* Brand */}
           <div>
-            <h2 className="text-2xl font-bold text-white tracking-wide">Trimrr</h2>
+            <h2 className="text-2xl font-bold text-white tracking-wide">Trimrrly</h2>
             <p className="mt-3 text-sm text-gray-400 leading-relaxed">
               The only URL shortener you’ll ever need.  
               <br />Fast, secure & reliable.
@@ -67,7 +67,7 @@ const AppLayout = () => {
         <div className="border-t border-gray-800 py-5 text-center text-sm text-gray-500">
           <p>
             Made with <span className="text-red-500">❤️</span> by{" "}
-            <span className="font-medium text-gray-300">Trimrr</span> • ©{" "}
+            <span className="font-medium text-gray-300">Trimrrly</span> • ©{" "}
             {new Date().getFullYear()} All rights reserved.
           </p>
         </div>
